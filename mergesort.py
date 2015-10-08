@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-import random,time
+import random,time,timeit
 def mergesort(list):
 	n = len(list)
 	if ( n < 2 ):
@@ -19,10 +19,23 @@ def mergesort(list):
 		result.extend(mergesort(right_list))
 	return result
 
-def main():
-	list = [112,3,5]
-	a = mergesort(list)
+def test_mergesort(list):
+	start  = timeit.default_timer()
+	mergesort(list)
+	end = timeit.default_timer()
+	return end-start
 
-	print a 
+def generate_input(size):
+	list = []
+	for element in range(0,size):
+		list.append(element)
+	sample_input = random.sample(list,size)
+	return sample_input
+	#return list
+def main():
+	size_list = [1,10,100,1000,10000]
+	for size in size_list:
+		list = generate_input(size)
+		print test_mergesort(list)
 if __name__ == "__main__":
 	main()

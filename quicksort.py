@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
+from decimal import *
 import random, time,timeit,sys
+sys.setrecursionlimit(10000)
 def swap(list,a,b):
 	temp = a
 	a_index = list.index(a)
@@ -7,11 +9,9 @@ def swap(list,a,b):
 	list[a_index] =	b
 	list[b_index] = temp
 
-# original quicksort
-
 def partition(list,start,end):
 	i = start - 1
-	for j in range(start,end):
+	for j in xrange(start,end):
 		if list[j] <= list[end]:
 			i = i + 1
 			swap(list,list[i],list[j])
@@ -27,11 +27,10 @@ def quicksort(list,start,end):
 # quicksort with randomized pivot value
 
 def randomized_partition(list,start,end):
-	pivot = random.choice(list)
-	pivot_index = list.index(pivot)
+	pivot_index = random.randrange(start, end+1)
 	swap(list,list[pivot_index],list[end])	
 	i = start - 1
-	for j in range(start,end):
+	for j in xrange(start,end):
 		if list[j] <= list[end]:
 			i = i + 1
 			swap(list,list[i],list[j])
@@ -48,11 +47,10 @@ def randomized_quicksort(list,start,end):
 
 def median_partition(list, start,end):
 	middle = (start + end)/2
-	pivot = median(list,start,end,middle)
-	pivot_index = list.index(pivot)
+	pivot_index = median(list,start,end,middle)
 	swap(list,list[pivot_index],list[end])	
 	i = start - 1
-	for j in range(start,end):
+	for j in xrange(start,end):
 		if list[j] <= list[end]:
 			i = i + 1
 			swap(list,list[i],list[j])
@@ -70,47 +68,105 @@ def median( list, start, end, middle):
 		return end if list[end] < list[middle] else middle
 	else:
 		return start if list[start] < list[middle] else middle
+
 ########################################################################
 def generate_input(size):
 	list = []
-	for element in range(0,size):
+	for element in xrange(0,size):
 		list.append(element)
 	sample_input = random.sample(list,size)
 	return sample_input
 
-def test_randomized_quicksort(list):
+def generate_worst_input(size):
+	list = []
+	reverse_list = []
+	for element in xrange(0,size):
+		list.append(element)
+	for reverse in list:
+		reverse_list.append(reverse)
+	return reverse_list
+def build_in_sort(list):
 	start_time = time.time()
 	end = len(list) - 1	
-	randomized_quicksort(list,0,end)
+	sorted(list)
 	end_time = time.time()
+	time_spent = end_time - start_time
+	return time_spent
+
+def test_randomized_quicksort(list):
+	start_time = timeit.default_timer()
+	end = len(list) - 1	
+	randomized_quicksort(list,0,end)
+	end_time = timeit.default_timer()
 	time_spent = end_time - start_time
 	return time_spent
 
 def test_normal_quicksort(list):
-	start_time = time.time()
+	start_time = timeit.default_timer()
 	end = len(list) - 1	
 	quicksort(list,0,end)
-	end_time = time.time()
+	end_time = timeit.default_timer()
 	time_spent = end_time - start_time
 	return time_spent
 
 def test_median_quicksort(list):
-	start_time = time.time()
+	start_time = timeit.default_timer()
 	end = len(list) - 1	
 	median_quicksort(list,0,end)
-	end_time = time.time()
+	end_time = timeit.default_timer()
 	time_spent = end_time - start_time
 	return time_spent
 
+def test_for_normal_qsort():
+	size_list = [1,10,100,1000]
+	for	size in size_list:
+		list = generate_worst_input(size)
+		time_list = []	
+		for count in xrange(1,5):
+			time_list.append(test_normal_quicksort(list))
+		average = 1.0 * (sum(time_list)/len(time_list))
+		print average
+	return 0
+
+def test_for_randomized_qsort():
+	size_list = [1,10,100,1000]
+	for	size in size_list:
+		list = generate_worst_input(size)
+		time_list = []	
+		for count in xrange(1,5):
+			time_list.append(test_randomized_quicksort(list))
+		average = 1.0 * (sum(time_list)/len(time_list))
+		print average
+	return 0
+
+
+def test_for_median_qsort():
+	size_list = [1,10,100,1000]
+	for	size in size_list:
+		list = generate_worst_input(size)
+		time_list = []	
+		for count in xrange(1,5):
+			time_list.append(test_median_quicksort(list))
+		average = 1.0 * (sum(time_list)/len(time_list))
+		print average
+	return 0
+
 def main():
-	size = 1000
-	list = generate_input(size)
-	#list = [30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1]	
-	normal_time = test_normal_quicksort(list)
-	randomized_time = test_randomized_quicksort(list)
-	median_time = test_median_quicksort(list)
-	print normal_time
-	print randomized_time
-	print median_time
+	list_a = generate_input(10000)
+	list_b = list_a
+	list_c = list_a
+	#print test_normal_quicksort(list_a)
+	print test_randomized_quicksort(list_b)
+	#print test_median_quicksort(list_c)
+
+
 if __name__ == "__main__":
 	main()
+#	test_for_normal_qsort()
+#j	test_for_randomized_qsort()
+#	test_for_median_qsort()
+
+
+
+
+
