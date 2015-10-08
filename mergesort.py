@@ -1,27 +1,28 @@
 from __future__ import unicode_literals
 import random,time
-def mergesort(list,empty_list):
+def mergesort(list):
 	n = len(list)
 	if ( n < 2 ):
-		return
+		return list
 	half_size = n/2
-	left_list = list[:half_size]
-	right_list = list[half_size:]
-	mergesort(left_list,empty_list)
-	mergesort(right_list,empty_list)
-	Merge(left_list,right_list,empty_list)
+	left_list = mergesort(list[:half_size])
+	right_list = mergesort(list[half_size:])
+	result = []
+	while len(left_list) > 0 and len(right_list) >0:
+		if left_list[0] > right_list[0]:
+			result.append(right_list.pop(0))
+		else:
+			result.append(left_list.pop(0))
+	if len(left_list) > 0:
+		result.extend(mergesort(left_list))
+	else:
+		result.extend(mergesort(right_list))
+	return result
 
-def Merge(left_list,right_list,list):
-	left_index = len(left_list) -1
-	right_index = len(right_list) -1
-	left_start = 0
-	right_start = 0
-	while left_start < left_inde
 def main():
-	list = [1,2,3,5]
-	empty_list = []
-	mergesort(list,empty_list)
-	print empty_list
+	list = [112,3,5]
+	a = mergesort(list)
 
+	print a 
 if __name__ == "__main__":
 	main()

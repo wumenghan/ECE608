@@ -67,8 +67,9 @@ def test_normal_quicksort(list):
 	return time_spent
 
 def main():
-	size = 10000
+	size = 1000
 	list = generate_input(size)
+	#list = [30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1]	
 	normal_time = test_normal_quicksort(list)
 	randomized_time = test_randomized_quicksort(list)
 	print normal_time
