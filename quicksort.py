@@ -70,6 +70,8 @@ def median( list, start, end, middle):
 		return start if list[start] < list[middle] else middle
 
 ########################################################################
+	
+		
 def generate_input(size):
 	list = []
 	for element in xrange(0,size):
@@ -85,6 +87,9 @@ def generate_worst_input(size):
 	for reverse in list:
 		reverse_list.append(reverse)
 	return reverse_list
+
+
+
 def build_in_sort(list):
 	start_time = time.time()
 	end = len(list) - 1	
@@ -93,39 +98,31 @@ def build_in_sort(list):
 	time_spent = end_time - start_time
 	return time_spent
 
+def decorator_for_quicksort_time(func):
+	def func_wrapper(*args,**kwargs):
+		start_time = timeit.default_timer()
+		func(args[0])	
+		end_time = timeit.default_timer()
+		time_spent = end_time - start_time
+		return time_spent
+	return func_wrapper	
+
+@decorator_for_quicksort_time
 def test_randomized_quicksort(list):
-	start_time = timeit.default_timer()
-	end = len(list) - 1	
-	randomized_quicksort(list,0,end)
-	end_time = timeit.default_timer()
-	time_spent = end_time - start_time
-	return time_spent
+	return randomized_quicksort(list,0,len(list)-1)
 
+@decorator_for_quicksort_time
 def test_normal_quicksort(list):
-	start_time = timeit.default_timer()
-	end = len(list) - 1	
-	quicksort(list,0,end)
-	end_time = timeit.default_timer()
-	time_spent = end_time - start_time
-	return time_spent
+	return quicksort(list,0,len(list)-1)
 
+@decorator_for_quicksort_time
 def test_median_quicksort(list):
-	start_time = timeit.default_timer()
-	end = len(list) - 1	
-	median_quicksort(list,0,end)
-	end_time = timeit.default_timer()
-	time_spent = end_time - start_time
-	return time_spent
+	return median_quicksort(list,0,len(list)-1)
 
-def test_for_normal_qsort():
-	size_list = [1,10,100,1000]
-	for	size in size_list:
-		list = generate_worst_input(size)
-		time_list = []	
-		for count in xrange(1,5):
-			time_list.append(test_normal_quicksort(list))
-		average = 1.0 * (sum(time_list)/len(time_list))
-		print average
+
+def decorator_for_average(func):
+	def func_wrapper(*args,**kwargs):
+		return 0
 	return 0
 
 def test_for_randomized_qsort():
@@ -151,14 +148,33 @@ def test_for_median_qsort():
 		print average
 	return 0
 
+def decorator_for_test(func):
+	def func_wrapper(*args,**kwargs):
+		time_list = []
+		for count in xrange(1,5):
+			time_list.append(func(args[0]))
+			#time_list.append(func(list))	
+		average = 1.0 * (sum(time_list)/len(time_list))
+		return average	
+	return func_wrapper
+
+@decorator_for_test
+def test_for_normal_qsort(list):
+	return test_normal_quicksort(list)
+
+
 def main():
 	list_a = generate_input(10000)
 	list_b = list_a
 	list_c = list_a
 	#print test_normal_quicksort(list_a)
-	print test_randomized_quicksort(list_b)
+	size_list = [1,10,100]
+	for size in size_list:
+		input = generate_input(size)	
+		
+		print test_for_normal_qsort(input)
 	#print test_median_quicksort(list_c)
-
+	print test_randomized_quicksort(generate_input(100),0,len(generate_input(100))-1)
 
 if __name__ == "__main__":
 	main()
